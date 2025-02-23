@@ -1,4 +1,5 @@
 using System;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.Rendering.DebugUI;
@@ -7,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
     [SerializeField] private float rotationSpeed = 10f;
-    [SerializeField] private Camera Camera;
+    [SerializeField] private CinemachineCamera Camera;
     [SerializeField] private float jumpHeight = 5f;
     private Vector2 moveInput;
     private Rigidbody rb;
@@ -18,27 +19,26 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
     }
-
-    private void FixedUpdate()
+    private void Update()
     {
         RotationUpdate();
         MovementUpdate();
     }
+    private void FixedUpdate()
+    {
+        
+    }
     private void RotationUpdate()
     {
-        Transform camTransform = Camera.main.transform;
-        Vector3 camForward = camTransform.forward;
+        Vector3 camForward = Camera.transform.forward;
         camForward.y = 0f;
-        if (camForward.sqrMagnitude > 0.001f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(camForward);
-            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime));
-        }
+        Quaternion targetRotation = Quaternion.LookRotation(camForward);
+        rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.deltaTime));
     }
     private void MovementUpdate()
     {
         Vector3 moveDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
-        Vector3 targetPosition = rb.position + moveDirection * speed * Time.fixedDeltaTime;
+        Vector3 targetPosition = rb.position + moveDirection * speed * Time.deltaTime;
         rb.MovePosition(targetPosition);
     }
     private void OnCollisionEnter(Collision collision)
