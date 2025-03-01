@@ -48,12 +48,18 @@ public class PlayerMovement : MonoBehaviour
             isGrounded = true;
         }
     }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+        }
+    }
     public void OnJump()
     {
         if (isGrounded)
         {
             rb.AddForce(Vector3.up * jumpHeight, ForceMode.Impulse);
-            isGrounded = false;
         }
     }
     public void OnMove(InputValue value)
