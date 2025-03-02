@@ -42,7 +42,11 @@ public class PlayerControllerV2 : MonoBehaviour
     {
         Vector3 moveDirection = (transform.right * moveInput.x) + (transform.forward * moveInput.y);
         moveDirection.Normalize();
-        rb.AddForce(moveDirection * acceleration, ForceMode.Acceleration);
+
+        // Adjust acceleration based on whether the player is grounded
+        float currentAcceleration = isGrounded ? acceleration : acceleration * airControlFactor;
+
+        rb.AddForce(moveDirection * currentAcceleration, ForceMode.Acceleration);
         // limit acceleration to max speed
         if (rb.linearVelocity.magnitude > maxSpeed)
         {
@@ -61,12 +65,9 @@ public class PlayerControllerV2 : MonoBehaviour
     {
         if (jumpCount < 2)
         {
-            //rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpHeight, rb.linearVelocity.z);
             rb.AddForce(Vector3.up * jumpHeight, ForceMode.VelocityChange);
             isGrounded = false;
             jumpCount++;
         }
     }
-
-
 }
