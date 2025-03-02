@@ -9,9 +9,11 @@ public class PlayerControllerV2 : MonoBehaviour
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private CinemachineCamera Camera;
     [SerializeField] private float jumpHeight = 5f;
+    [SerializeField] private float dashSpeed = 10f;
     [SerializeField] private float airControlFactor = 0.2f;
     private Vector2 moveInput;
     private bool isGrounded = true;
+    private bool hasDash = true;
     private int jumpCount;
     private Rigidbody rb;
     private void Awake()
@@ -58,6 +60,7 @@ public class PlayerControllerV2 : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            hasDash=true;
             jumpCount = 0;
         }
     }
@@ -70,4 +73,13 @@ public class PlayerControllerV2 : MonoBehaviour
             jumpCount++;
         }
     }
+    public void OnDash()
+    {
+        if (hasDash)
+        {
+            rb.AddForce(transform.forward * dashSpeed, ForceMode.VelocityChange);
+            hasDash = false;
+        }
+    }
+
 }
